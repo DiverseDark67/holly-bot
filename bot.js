@@ -1,36 +1,88 @@
+//Holly-Bot version V1.1.0
 const { Client, GatewayIntentBits } = require('discord.js');
 
-//Create a new client instance
+// Create a new client instance
 const client = new Client({
-	intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.MessageContent
-	]
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent // Required for reading messages
+    ]
 });
 
-// Bot token
-const token = 'EnterYourBotToken';
+// Your bot token
+const token = 'YOUR_BOT_TOKEN_HERE';
 
-//Ready event: triggers when the bot logs in
+// Array of random responses
+const defaultResponses = [
+    "okay",
+    "okay",
+    "What do you mean by that?",
+    "no",
+    "Shenanigans...",
+    "yes",
+    "fine",
+    "no problem",
+    "understood",
+    "JZ House React this guy"
+];
+
+// Array of gif responses
+const gifResponses = [
+    "https://tenor.com/view/kevin-kevin-olson-pointing-finger-kevtechify-gif-1782117470257839659",
+    "https://tenor.com/view/kevtechify-sandwich-ospf-network-gif-9445611463973337668",
+    "https://tenor.com/view/kevtechify-gif-1133948291341687435",
+    "https://tenor.com/view/kaperoo-the-isle-puppy-strawberry-kebab-gif-2297137112253417897",
+    "https://tenor.com/view/walking-cat-cat-water-gif-13530083",
+    "https://tenor.com/view/cat-cat-drink-water-water-cat-daily-reminder-drink-water-gif-18175012770390304303",
+    "https://tenor.com/view/iamtoffie-dog-cake-dogcake-puppycake-puppy-in-fridge-gif-17202106354264547949",
+    "https://tenor.com/view/ospf-gif-20198001",
+    "https://tenor.com/view/armzzy-zfe-uncle-pete-sir-box-packet-goblin-gif-14669189",
+    "https://tenor.com/view/kdo-se-ptal-kdo-se-ptal-ccna-gif-25844168"
+];
+
 client.once('ready', () => {
-	console.log('Logged in as ${client.user.tag}!'};
+    console.log(`Logged in as ${client.user.tag}!`);
 });
 
-//Message event: triggers whenever a message is sent in a server
 client.on('messageCreate', (message) => {
-	//Avoid replying to other bott messages or the bot itself
-	if (message.author.bot) return;
+    if (message.author.bot) return;
 
-	//Specify the channel ID to listen to
-	const targetChannelId = 'YOUR_CHANNEL_ID';
+    const targetChannelId = 'YOUR_CHANNEL_ID_HERE';
+    if (message.channel.id === targetChannelId) {
+        // Check if the message contains "hello holly" or "hello"
+        const lowerCaseMessage = message.content.toLowerCase();
+        if (lowerCaseMessage.includes("hello holly") || lowerCaseMessage === "hello" || lowerCaseMessage === "hi" || lowerCaseMessage === "hey") {
+            message.reply("Hello! How can I help you?").catch(console.error);
+        }
 
-	//Check to see if the message is in the specific channel
-	if (message.channel.id === targetChannelId) {
-		//Reply to message
-		message.reply('okay').catch(console.error);
-	}
+        //Send a gif
+        else if (lowerCaseMessage.includes("gif")) {
+            // Generate a random index between 0 and 9
+            const randomIndex = Math.floor(Math.random() * 10);
+            
+            // Reply with a random response
+            message.reply(gifResponses[randomIndex]).catch(console.error);
+        }
+
+        // Number based response
+        else if (lowerCaseMessage.includes("how much") || lowerCaseMessage.includes("how many")) {
+            // Generate a random index between 0 and 999
+            const randomIndex = Math.floor(Math.random() * 1000);
+            
+            // Reply with a random response
+            message.reply(randomIndex).catch(console.error);
+        }
+
+        //Generate a default response
+        else {
+            // Generate a random index between 0 and 9
+            const randomIndex = Math.floor(Math.random() * 10);
+            
+            // Reply with a random response
+            message.reply(defaultResponses[randomIndex]).catch(console.error);
+        }
+    }
 });
 
-// Log the bot in
 client.login(token);
