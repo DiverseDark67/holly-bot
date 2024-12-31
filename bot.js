@@ -1,5 +1,6 @@
-//Holly-Bot version V1.1.0
+//Holly-Bot version V1.1.1 - 12/30/2024
 const { Client, GatewayIntentBits } = require('discord.js');
+const schedule = require('node-schedule'); // Import node-schedule for scheduling tasks
 
 // Create a new client instance
 const client = new Client({
@@ -43,6 +44,16 @@ const gifResponses = [
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    // Schedule a message for 7:00 AM CST every day
+    const channelId = 'YOUR_CHANNEL_ID_HERE'; // Replace with your target channel ID
+    schedule.scheduleJob('0 7 * * *', 'America/Chicago', async () => {
+        const channel = await client.channels.fetch(channelId);
+        if (channel) {
+            channel.send(gifResponses[5]).catch(console.error);
+        } else {
+            console.error('Channel not found.');
+        }
+    });
 });
 
 client.on('messageCreate', (message) => {
@@ -68,10 +79,11 @@ client.on('messageCreate', (message) => {
         // Number based response
         else if (lowerCaseMessage.includes("how much") || lowerCaseMessage.includes("how many")) {
             // Generate a random index between 0 and 999
-            const randomIndex = Math.floor(Math.random() * 1000);
+            const randomNumber = Math.floor(Math.random() * 1000);
+            const response = `I would say ${randomNumber}`;
             
             // Reply with a random response
-            message.reply(randomIndex).catch(console.error);
+            message.reply(response).catch(console.error);
         }
 
         //Generate a default response
